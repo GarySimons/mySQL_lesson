@@ -12,11 +12,11 @@ connection = pymysql.connect(host='localhost',
                              db='Chinook')
 try:
     with connection.cursor() as cursor:
-        rows = [(23, 'bob'),
-                (24, 'jim'),
-                (25, 'fred')]
-        cursor.executemany("UPDATE Friends SET age = %s WHERE name = %s;",
-                           rows)
+        list_of_names = ['sam', 'ian']
+        # Prepare a string with the same number of placeholders as in list_of_names
+        format_strings = ','.join(['%s']*len(list_of_names))
+        cursor.execute("DELETE FROM Friends WHERE name in ({});".format(format_strings), list_of_names)
         connection.commit()
 finally:
+    # Close the connection, regardless of whether the above was successful
     connection.close()
